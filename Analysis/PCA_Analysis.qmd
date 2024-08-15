@@ -1,0 +1,116 @@
+---
+title: "Motivations Virgen de la Puerta"
+author: "Rodolfo León"
+format: html
+date: 8/11/2024
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+library(Factoshiny)
+```
+
+## Principal Components Analysis - PCA
+
+### Load the data
+
+```{r}
+otuzco <- read_csv2("data/Motivaciones_Virgen_de_Otuzco_short_UTF8.csv")
+```
+
+### Check the structure
+
+```{r}
+str(otuzco)
+```
+
+### Create the data matrix
+
+```{r}
+df_otuzco <- otuzco[, 2:38]
+```
+
+### Redundancy
+```{r}
+corrplot(cor(df_otuzco))
+```
+
+### Run the PCA
+
+```{r}
+pca_result <- PCA(df_otuzco, graph = TRUE)
+```
+
+### Explore the results
+
+#### 1.Top 20 Eigenvalues
+
+```{r}
+pca_result$eig[1:20,]
+```
+
+#### 2. Top 20 Variables
+
+```{r}
+pca_result$var$coord[1:20, ]
+```
+
+#### 3. Top 20 individuals
+
+```{r}
+pca_result$ind$coord[1:20,]
+```
+
+### Scree plot (Contributions graph)
+
+```{r}
+fviz_eig(pca_result, addlabels = TRUE)
+```
+
+### Visualize individuals and variables on the first two principal components
+
+```{r}
+fviz_pca_ind(pca_result, col.ind = "cos2", col.var = "contrib", repel = TRUE)
+```
+
+### Correlation circle
+
+```{r}
+
+fviz_pca_var(pca_result, col.var = "cos2", repel = TRUE)
+```
+
+```{r, echo=FALSE}
+
+#res.shiny <- PCAshiny(otuzco)
+```
+
+```{r}
+cor(df_otuzco)
+print(cor(df_otuzco))
+```
+
+```{r}
+library(psych)
+kmo_result <- KMO(data_coef)
+kmo_value <- kmo_result$KMO
+print(kmo_value)
+```
+
+```{r}
+# Assuming 'df_otuzco' is your correlation matrix
+bartlett_result <- cortest.bartlett(data_coef, n = nrow(data_coef))
+bartlett_p_value <- bartlett_result$p.value
+print(bartlett_p_value)
+```

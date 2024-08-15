@@ -1,0 +1,131 @@
+---
+title: "Frecuencias de Motivaciones_Otuzco"
+author: "Rodolfo León"
+format: html
+date: last-modified
+date-format: long
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+library(Factoshiny)
+library(pander)
+library(scales)
+```
+
+```{r}
+#otuzco <- read_csv2("data/Motivaciones_Virgen_de_Otuzco_short_UTF8.csv")
+otuzco <- read_excel("data/Motivaciones_Virgen_de_Otuzco_long.xlsx")
+```
+
+```{r}
+df_otuzco <- otuzco[, 2:38]
+```
+
+```{r}
+# Select the columns V2 to V24
+selected_columns <- df_otuzco %>% select(1:25)
+```
+
+```{r}
+# Calculate the absolute frequency for each column
+absolute_frequencies <- selected_columns %>%
+  reframe(across(everything(), ~ table(factor(., levels = 1:5)))) %>%
+  t() %>%
+  as.data.frame()
+```
+
+```{r}
+# Rename the columns to 1, 2, 3, 4, 5
+colnames(absolute_frequencies) <- c(1, 2, 3, 4, 5)
+```
+
+```{r}
+# Calculate the relative frequency (percentage)
+relative_frequencies <- absolute_frequencies %>%
+  mutate(across(everything(), ~ round(. / rowSums(absolute_frequencies) * 100, 1)))
+
+```
+
+```{r}
+# Define the widths for the first and other columns
+column_widths <- c(50, rep(10, ncol(absolute_frequencies) - 1))
+```
+
+```{r}
+# Helper function to wrap text within cells with specified widths
+wrap_text <- function(df, widths) {
+  df[] <- lapply(seq_along(df), function(i) {
+    sapply(df[[i]], function(y) {
+      paste(strwrap(as.character(y), width = widths[i]), collapse = "\n")
+    })
+  })
+  return(as.data.frame(df))
+}
+```
+
+```{r}
+# Wrap the first column text to 50 characters
+absolute_frequencies_wrapped <- wrap_text(absolute_frequencies, column_widths)
+relative_frequencies_wrapped <- wrap_text(relative_frequencies, column_widths)
+```
+
+```{r}
+# Select columns 1 to 5 from relative_frequencies
+# Note: Adjust this if there are fewer columns, as you mentioned columns 1 to 5
+relative_frequencies_selected <- relative_frequencies_wrapped %>%
+  select(1:5) 
+```
+
+```{r}
+combined_df <- cbind(absolute_frequencies_wrapped, relative_frequencies_selected)
+
+```
+
+```{r}
+# Set pander options for table formatting
+panderOptions('table.split.table', Inf)          # Avoid splitting tables across pages
+panderOptions('table.style', 'multiline')        # Enable multiline cell text wrapping
+panderOptions('table.alignment.default', 'center') # Align text to the left
+panderOptions('table.alignment.rownames', 'left') # Align row names (first column) to the left
+panderOptions('table.emphasize.rownames', FALSE)  # Remove the ** brackets from row names
+```
+
+##### Tabla 1. Frecuencias de las respuestas sobre motivaciones de asistencia
+
+###### ------------------------------------------------  Frecuencias Absolutas ———— Frecuencias Relativas
+
+```{r}
+# Print the combined table
+pander(combined_df, 
+       #caption = "________________________________________Frecuencias Absolutas_____________Frecuencias Relativas %_______", 
+       colnames = c("Ranking 1 (Absolute)", "Ranking 2 (Absolute)", "Ranking 3 (Absolute)", 
+                    "Ranking 4 (Absolute)", "Ranking 5 (Absolute)", 
+                    "Ranking 1 (Relative)", "Ranking 2 (Relative)", 
+                    "Ranking 3 (Relative)", "Ranking 4 (Relative)", "Ranking 5 (Relative)"))
+```
+
+```{r}
+# Print the absolute frequencies table with wrapped text
+#pander(absolute_frequencies_wrapped, 
+#       caption = "Frecuencias Absolutas", 
+#       colnames = c("1", "2", "3", "4", "5"))
+```
+
+```{r}
+# Print the relative frequencies table with wrapped text
+#pander(relative_frequencies_wrapped, 
+#       caption = "Frecuencias Relativas (%)", 
+#       colnames = c("Ranking 1", "Ranking 2", "Ranking 3", "Ranking 4", "Ranking 5"))
+```

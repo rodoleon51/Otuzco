@@ -1,0 +1,119 @@
+---
+title: "Estadísticas Descriptivas"
+author: "Rodolfo León"
+format: html
+date: last-modified
+date-format: long
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(corrplot)
+library(pander)
+library(scales)
+library(e1071)
+```
+
+```{r}
+#otuzco <- read_csv2("data/Motivaciones_Virgen_de_Otuzco_short_UTF8.csv")
+otuzco <- read_excel("data/Motivaciones_Virgen_de_Otuzco_long.xlsx")
+```
+
+```{r}
+df_otuzco <- otuzco[, 2:38]
+```
+
+```{r}
+# Select the columns V2 to V24
+selected_columns <- df_otuzco %>% select(1:25)
+```
+
+```{r}
+# Calculate the mean (average) for each column
+mean_values <- round(apply(selected_columns, 2, mean), 2)
+
+```
+
+```{r}
+# Calculate the standard deviation for each column
+sd_values <- round(apply(selected_columns, 2, sd), 3)
+```
+
+```{r}
+library(e1071)
+```
+
+```{r}
+# Calculate the skewness for each column
+skewness_values <- round(apply(selected_columns, 2, skewness, na.rm = TRUE), 3)
+se_skew <- round(sqrt(6 / length(selected_columns)), 3)
+```
+
+```{r}
+# Calculate the kurtosis for each column
+kurtosis_values <- round(apply(selected_columns, 2, function(x) kurtosis(x, na.rm = TRUE)), 3)
+se_kurt <- round(sqrt(24 / length(selected_columns)), 3)
+```
+
+
+```{r}
+# Helper function to wrap text within cells with specified widths
+wrap_text <- function(df, widths) {
+  df[] <- lapply(seq_along(df), function(i) {
+    sapply(df[[i]], function(y) {
+      paste(strwrap(as.character(y), width = widths[i]), collapse = "\n")
+    })
+  })
+  return(as.data.frame(df))
+}
+```
+
+```{r}
+# Create a summary data frame
+summary_df <- data.frame(Column = colnames(selected_columns),
+                         Mean = mean_values,
+                         SD = sd_values,
+                         Skewness = skewness_values,
+                         Skewness_SE = se_skew,
+                         Kurtosis = kurtosis_values,
+                         Kurtosis_SE = se_kurt)
+
+```
+
+```{r}
+# Set column widths
+column_widths <- c(40, rep(10, ncol(summary_df) - 1))
+```
+
+```{r}
+#Wrap text in the first column
+summary_df_wrapped <- wrap_text(summary_df, column_widths)
+#print(summary_df_wrapped)
+
+```
+```{r}
+# Set pander options for table formatting
+panderOptions('table.split.table', Inf)          # Avoid splitting tables across pages
+panderOptions('table.style', 'multiline')        # Enable multiline cell text wrapping
+panderOptions('table.alignment.default', 'center') # Align text to the left
+panderOptions('table.alignment.rownames', 'left') # Align row names (first column) to the left
+panderOptions('table.emphasize.rownames', FALSE)  # Remove the ** brackets from row names
+```
+
+##### Estadísticas descriptivas de las motivaciones de asistencias 
+```{r}
+# Print the combined table
+pander(summary_df_wrapped[, -1], 
+       #  caption = " Descriptive statistics", 
+       colnames = c("Mean", "Std. Deviation", "Skewness", "Sk_Error", "Kurtosis", "KRT_Error"
+                    ))
+```
+

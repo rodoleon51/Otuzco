@@ -1,0 +1,201 @@
+---
+title: "Motivations Virgen de Otuzco"
+author: "Rodolfo León"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+library(readxl)
+```
+
+```{r}
+# Load the data
+df_otuzco <- readxl::read_excel("data\\Motivaciones Virgen de Otuzco.xlsx")
+```
+
+```{r}
+View(df_otuzco)
+```
+
+## I. Sociodemographic variables.
+
+### 1. Gender
+
+```{r}
+gender <- table(df_otuzco[30])
+
+gender_summary <- data.frame(
+  Gender = c("Male", "Female"),
+  Count = gender,
+  Percentage = round((gender / sum(gender)) * 100, 1)
+) |> 
+  rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Gender, Count, Percentage)
+
+sums <- colSums(gender_summary[, 2:3])
+gender_with_sums <- rbind(gender_summary, c("Total", sums))
+print(gender_with_sums)
+
+```
+
+### 2. Estado civil
+
+```{r}
+marital_status <- table(df_otuzco[31])
+
+marital_status_summary <- data.frame(
+  Marital_Status = c("Single", "Married", "Other"),
+  Count = marital_status,
+  Percentage = round((marital_status / sum(marital_status)) * 100, 1)
+  )|> 
+  rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Marital_Status, Count, Percentage)
+
+sums <- colSums(marital_status_summary[, 2:3])
+marital_status_with_sums <- rbind(marital_status_summary, c("Total", sums))
+
+print(marital_status_with_sums)
+```
+
+### 3. Age
+
+```{r}
+age <- table(df_otuzco[32])
+
+age_summary <- data.frame(
+  Age = c("Less than 20 years", "21-30 years old", "31-40 years old", "41-50 years old", "51-60 years old", "More than 61 years"),
+  Count = age,
+  Percentage = round((age / sum(age)) * 100, 1)
+  )|> 
+  rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Age, Count, Percentage)
+
+sums <- colSums(age_summary[, 2:3])
+age_with_sums <- rbind(age_summary, c("Total", sums))
+
+print(age_with_sums)
+```
+
+### 4. Education
+
+```{r}
+education <- table(df_otuzco[33])
+
+education_summary <- data.frame(
+  Education = c("Primary", "Secondary", "University", "Postgraduate", "Master", "Ph.D"),
+  Count = education,
+  Percentage =round((education / sum(education)) * 100, 1)
+  )|> 
+  rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Education, Count, Percentage)
+
+sums <- colSums(education_summary[, 2:3])
+education_with_sums <- rbind(education_summary, c("Total", sums))
+
+print(education_with_sums)
+```
+
+### 5. Occupation
+
+```{r}
+occupation <- table(df_otuzco[34])
+
+occupation_summary <- data.frame(
+  Occupation = c("Estudiante", "Investigador/Científico", "Empresario", "Empleado Privado", "Empleado Público", "Jubilado", "Desempleado", "Otros"),
+  Count = occupation,
+  Percentage = round((occupation / sum(occupation)) * 100, 1)
+  )|>  
+  rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Occupation, Count, Percentage)
+
+sums <- colSums(occupation_summary[, 2:3])
+occupation_with_sums <- rbind(occupation_summary, c("Total", sums))
+
+print(occupation_with_sums)
+```
+
+### 6. Who do you travel with?
+
+```{r}
+company <- table(df_otuzco[35])
+
+company_summary <- data.frame(
+  Company = c("Alone", "With family", "With friends", "With partner", "Other"),
+  Count = company,
+  Percentage = round((company / sum(company)) * 100, 1)
+) |> 
+
+  rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Company, Count, Percentage)
+
+sums <- colSums(company_summary[, 2:3])
+company_with_sums <- rbind(company_summary, c("Total", sums))
+
+print(company_with_sums)
+```
+
+### 7. How many times have you been to the procession?
+
+```{r}
+visits <- table(df_otuzco[36])
+
+visits_summary <- data.frame(
+  Visits = c("Once", "Twice", "Three times", "More than three times"),
+  Count = visits,
+  Percentage = round((visits / sum(visits)) * 100, 1)
+) |> 
+rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Visits, Count, Percentage)
+
+sums <- colSums(visits_summary[, 2:3])
+visits_with_sums <- rbind(visits_summary, c("Total", sums))
+
+
+print(visits_with_sums)
+```
+
+### 8. What will be your daily expense per person during the festivity?
+
+```{r}
+daily_expense <- table(df_otuzco[37])
+
+daily_expense_summary <- data.frame(
+  Daily_Expense_Soles = c("Less than 50", "50 - 99", "100 - 149", "150 - 199", "200 -249", "More than 250"),
+  Count = daily_expense,
+  Percentage = round((daily_expense / sum(daily_expense)) * 100, 1)
+) |> 
+rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Daily_Expense_Soles, Count, Percentage)
+
+sums <- colSums(daily_expense_summary[, 2:3])
+daily_expense_with_sums <- rbind(daily_expense_summary, c("Total", sums))
+
+print(daily_expense_with_sums)
+```
+
+### 9. What is your monthly income level (Dollars/month)?
+
+```{r}
+monthly_income <- table(df_otuzco[38])
+
+monthly_income_summary <- data.frame(
+ Monthly_Income_USD = c("Less than 300", "300 - 600", "600 - 900", "900 - 1200", "More than 1200"),
+  Count = monthly_income,
+  Percentage = round((monthly_income / sum(monthly_income)) * 100, 1)
+) |> 
+rename(Count = Count.Freq, Percentage = Percentage.Freq) |> 
+  select(Monthly_Income_USD, Count, Percentage)
+
+sums <- colSums(monthly_income_summary[, 2:3])
+monthly_income_with_sums <- rbind(monthly_income_summary, c("Total", sums))
+
+print(monthly_income_with_sums)
+```
