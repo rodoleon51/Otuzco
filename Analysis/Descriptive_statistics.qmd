@@ -54,15 +54,21 @@ library(e1071)
 ```{r}
 # Calculate the skewness for each column
 skewness_values <- round(apply(selected_columns, 2, skewness, na.rm = TRUE), 3)
-se_skew <- round(sqrt(6 / length(selected_columns)), 3)
+#se_skew <- round(sqrt(6 / length(selected_columns)), 3)
 ```
 
 ```{r}
 # Calculate the kurtosis for each column
 kurtosis_values <- round(apply(selected_columns, 2, function(x) kurtosis(x, na.rm = TRUE)), 3)
-se_kurt <- round(sqrt(24 / length(selected_columns)), 3)
+#se_kurt <- round(sqrt(24 / length(selected_columns)), 3)
 ```
 
+```{r}
+#Calculate Kurtosis and Skewness Standard Error
+N = length(selected_columns)
+se_skew = round(sqrt((6*N*(N-1))/((N-2)*(N+1)*(N+3))), 3)
+se_kurt = round(2*se_skew*sqrt((N^2-1)/((N-3)*(N+5))), 3)
+```
 
 ```{r}
 # Helper function to wrap text within cells with specified widths
@@ -99,16 +105,18 @@ summary_df_wrapped <- wrap_text(summary_df, column_widths)
 #print(summary_df_wrapped)
 
 ```
+
 ```{r}
 # Set pander options for table formatting
 panderOptions('table.split.table', Inf)          # Avoid splitting tables across pages
 panderOptions('table.style', 'multiline')        # Enable multiline cell text wrapping
-panderOptions('table.alignment.default', 'center') # Align text to the left
+panderOptions('table.alignment.default', 'center') # Center text
 panderOptions('table.alignment.rownames', 'left') # Align row names (first column) to the left
 panderOptions('table.emphasize.rownames', FALSE)  # Remove the ** brackets from row names
 ```
 
-##### Estadísticas descriptivas de las motivaciones de asistencias 
+##### Estadísticas descriptivas de las motivaciones de asistencias
+
 ```{r}
 # Print the combined table
 pander(summary_df_wrapped[, -1], 
@@ -116,4 +124,5 @@ pander(summary_df_wrapped[, -1],
        colnames = c("Mean", "Std. Deviation", "Skewness", "Sk_Error", "Kurtosis", "KRT_Error"
                     ))
 ```
+
 
