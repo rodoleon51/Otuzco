@@ -19,6 +19,7 @@ library(FactoMineR)
 library(factoextra)
 library(corrplot)
 library(Factoshiny)
+library(psych)
 ```
 
 ## Principal Components Analysis - PCA
