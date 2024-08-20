@@ -124,5 +124,3 @@ pander(summary_df_wrapped[, -1],
        colnames = c("Mean", "Std. Deviation", "Skewness", "Sk_Error", "Kurtosis", "KRT_Error"
                     ))
 ```
-
-

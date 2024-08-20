@@ -1,0 +1,78 @@
+---
+title: "PCA Analysis - Decathlon example"
+author: "Rodolfo León"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+#| echo: false
+(library(tidyverse))
+library(ggthemes)
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+library(Factoshiny)
+```
+
+```{r}
+decathlon <- read.table('data/data_PCA_Decathlon.csv', header = TRUE, sep = ";", dec = ".", row.names = 1, check.names = FALSE)
+summary(decathlon)
+```
+
+```{r}
+# PCA with only active elements as active
+res <-PCA(decathlon[, 1:10])
+summary(res)
+```
+
+```{r}
+# PCA with supplementary variables
+res <- PCA(decathlon, quanti.sup = 11:12, quali.sup = 13)
+summary(res, nbelements = Inf)
+```
+
+```{r}
+# Description of the dimensions
+dimdesc(res)
+dimdesc(res, proba = 0.2)
+```
+
+```{r}
+# Drawing individuals according to the competition
+plot(res, cex = 0.8, invisible = "quali", title = "Individual PCA Graph")
+plot(res, cex = 0.8, habillage = "Competition")
+```
+
+```{r}
+# Confidence ellipses around the categories
+plotellipses(res)
+```
+
+```{r}
+# Graphs for dimensions 3 and 4
+plot(res, choix = "ind", cex = 0.8, habillage = 13, title = "Individual PCA Graph", axes = 3:4)
+plot(res, choix = "var", title = "variables PCA Graph", axes = 3:4)
+```
+
+```{r}
+# Selecting individuals
+plot(res, choix = "ind", cex = 0.8, habillage = 13, select = "cos2 0.7")
+plot(res, choix = "ind", cex = 0.8, habillage = 13, select = "contrib 5")
+plot(res, choix = "ind", cex = 0.8, habillage = 13, select = c("Clay", "Karpov"))
+```
+
+```{r}
+# Select variables
+plot(res, choix ="var", select = "contrib = 5")
+```
+
+```{r}
+plot(res, cex = 0.8, habillage = 13, select = "cos2 0.7", title = "Decathlon", cex.main = 1.1, cex.axis = 0.9, shadow = TRUE, auto = "y")
+```

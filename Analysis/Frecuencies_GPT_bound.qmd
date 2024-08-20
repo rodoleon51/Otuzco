@@ -104,7 +104,7 @@ panderOptions('table.emphasize.rownames', FALSE)  # Remove the ** brackets from 
 
 ##### Tabla 1. Frecuencias de las respuestas sobre motivaciones de asistencia
 
-###### ------------------------------------------------  Frecuencias Absolutas ———— Frecuencias Relativas
+###### ------------------------------------------------ Frecuencias Absolutas ———— Frecuencias Relativas
 
 ```{r}
 # Print the combined table
@@ -119,13 +119,13 @@ pander(combined_df,
 ```{r}
 # Print the absolute frequencies table with wrapped text
 #pander(absolute_frequencies_wrapped, 
-#       caption = "Frecuencias Absolutas", 
-#       colnames = c("1", "2", "3", "4", "5"))
+#      caption = "Frecuencias Absolutas", 
+#      colnames = c("1", "2", "3", "4", "5"))
 ```
 
 ```{r}
 # Print the relative frequencies table with wrapped text
 #pander(relative_frequencies_wrapped, 
-#       caption = "Frecuencias Relativas (%)", 
+#      caption = "Frecuencias Relativas (%)", 
 #       colnames = c("Ranking 1", "Ranking 2", "Ranking 3", "Ranking 4", "Ranking 5"))
 ```
