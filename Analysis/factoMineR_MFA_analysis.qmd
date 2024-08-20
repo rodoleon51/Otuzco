@@ -1,0 +1,162 @@
+---
+title: "Otuzco - MFA analysis"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+#| echo: false
+suppressPackageStartupMessages(library(tidyverse))
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+library(psych)
+```
+
+```{r}
+# Load the data
+otuzco <- read_csv2("data/Motivaciones_Virgen_de_Otuzco_short_UTF8.csv")
+otuzco <- otuzco[-c(1, 29)] # Remover columnas 1(Donde vive) y 29(Nacionalidad)
+```
+
+## Pruebas KMO y Bartlett's todas las variables
+
+### KMO
+
+```{r}
+library(psych)
+cor_matrix <- cor(otuzco, use="pairwise.complete.obs")
+kmo_result <- KMO(cor_matrix)
+cat("Overall MSA:", kmo_result$MSA, "\n")
+```
+
+### Bartlett's test
+
+```{r}
+library(psych)
+bartlett_result <- cortest.bartlett(cor_matrix, n = nrow(otuzco))
+p_value <- bartlett_result$p.value
+cat("p_value:", p_value)
+```
+
+### Cronbach's Alpha
+
+```{r}
+cronbach_result <- alpha(otuzco)
+print(cronbach_result$total)
+```
+Resultado: Alpha = 0.65 considerado cuestionable para la matriz total
+
+
+## Pruebas KMO y Bartlett's de las variables motivacionales
+
+### KMO
+
+```{r}
+library(psych)
+cor_matrix <- cor(otuzco[2:23], use="pairwise.complete.obs")
+kmo_result <- KMO(cor_matrix)
+cat("Overall MSA:", kmo_result$MSA, "\n")
+```
+
+### Bartlett's test
+
+```{r}
+library(psych)
+bartlett_result <- cortest.bartlett(cor_matrix, n = nrow(otuzco[2:23]))
+p_value <- bartlett_result$p.value
+cat("p_value:", p_value)
+```
+
+```{r}
+cronbach_result <- alpha(otuzco[2:23])
+print(cronbach_result$total)
+```
+Resultado: Alpha = 0,72 considerado aceptable para la matriz de motivaciones
+
+##### *Conclusión: Tanto la matriz completa como la de variables motivacionales satisfacen los criterios de idoneidad de KMO y Bartlett para el análisis factorial. El Alpha de Cronbach resulta cuestionable para la matriz completa y aceptable para la matriz de variables de motivación.*
+
+### Acomodar la variables motivacionales egún su grupo
+
+```{r}
+otuzco <- otuzco |>  relocate('2.21.Redención', .after = '2.1.Paz')
+otuzco <- otuzco |>  relocate('2.10.Curiosidad', .before = '2.14.Escapar')
+otuzco <- otuzco |>  relocate('2.8.Sitios', .after = '2.6.Tradición')
+```
+
+### Eliminar las variables motivacionales no relevantes
+
+```{r}
+otuzco <- otuzco[-c(3, 4, 9, 10, 11, 12, 13,18)]
+```
+
+```{r}
+# fviz_eig(otuzco, addlabels = TRUE, ncp = 15) + theme_grey()
+```
+
+## Análisis MFA
+
+```{r}
+active_vars <- otuzco[, 1:15]
+sup_vars <- otuzco[, 16:28]
+res <- MFA(active_vars, group = c(2, 4, 4, 3, 2), type = c(rep("s", 5)), ncp = 15, sup_vars, name.group = c("Paz interior", "Experiencias", "Relajación", "Espiritualidad", "Compras "), graph = FALSE) 
+```
+
+```{r}
+summary(res)
+```
+
+```{r}
+# The results are given on the first 2 dimensions
+summary(res, ncp=2)
+```
+
+```{r}
+dimdesc(res)
+```
+
+```{r}
+# Graph of the groups of variables
+plot(res,choix="group", cex=1.2)
+```
+
+```{r}
+# Graph of the  individuals
+#plot(res, habillage=1, cex = 0.8)
+```
+
+```{r}
+# Graph of the variables
+plot(res,choix="var", invisible="quanti.sup", title="Graph of the active variables")
+selection = c(grep("Paz Interior",rownames(res$quanti.var$coord),fixed=TRUE),
+              grep("Experiencias",rownames(res$quanti.var$coord),fixed=TRUE),
+              grep("Relajación",rownames(res$quanti.var$coord),fixed=TRUE),
+              grep("Espiritualidad",rownames(res$quanti.var$coord),fixed=TRUE),
+              grep("Compras",rownames(res$quanti.var$coord),fixed=TRUE))
+plot(res,choix="var",select=selection,invisible="quanti.sup")
+```
+
+```{r}
+plot(res,choix="var", invisible="quanti", habillage="none", lab.var=FALSE, 
+     title="Graph of the supplementary variables")
+
+# Graph with the partial points
+plot(res,choix="ind", partial="all", invisible="quali", title="Graph with the partial points")
+#plot(res, cex=0.8, invisible="ind", partial="all", title="Graph of the individuals")
+```
+
+```{r}
+#Graph of the partial axes
+plot(res,choix="axes")
+```
+
+```{r}
+# Color the individuals according to a qualitative variable
+#plot(res, cex=0.8, habillage=1)
+```

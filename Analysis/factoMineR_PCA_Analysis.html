@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.52">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rodolfo León">
+<meta name="dcterms.date" content="2024-08-20">
+
+<title>Motivaciones Virgen de la Puerta-factoMineR</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="factoMineR_PCA_Analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="factoMineR_PCA_Analysis_files/libs/quarto-html/quarto.js"></script>
+<script src="factoMineR_PCA_Analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="factoMineR_PCA_Analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="factoMineR_PCA_Analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="factoMineR_PCA_Analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="factoMineR_PCA_Analysis_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="factoMineR_PCA_Analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="factoMineR_PCA_Analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="factoMineR_PCA_Analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Motivaciones Virgen de la Puerta-factoMineR</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Rodolfo León </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 20, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidyverse))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="principal-components-analysis---pca" class="level2">
+<h2 class="anchored" data-anchor-id="principal-components-analysis---pca">Principal Components Analysis - PCA</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Load the data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>otuzco <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="st">"data/Motivaciones_Virgen_de_Otuzco_short_UTF8.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(otuzco)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 1.1.Vive en Otuzco    2.1.Paz       2.2.Grandeza    2.3.Consuelo  
+ Min.   :2          Min.   :2.000   Min.   :3.000   Min.   :3.000  
+ 1st Qu.:2          1st Qu.:4.000   1st Qu.:4.000   1st Qu.:4.000  
+ Median :2          Median :5.000   Median :5.000   Median :5.000  
+ Mean   :2          Mean   :4.466   Mean   :4.591   Mean   :4.359  
+ 3rd Qu.:2          3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:5.000  
+ Max.   :2          Max.   :5.000   Max.   :5.000   Max.   :5.000  
+  2.4.Belleza     2.5.Misterio  2.6.Tradición     2.7.Fiesta      2.8.Sitios   
+ Min.   :2.000   Min.   :1.00   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+ 1st Qu.:4.000   1st Qu.:3.00   1st Qu.:3.000   1st Qu.:3.000   1st Qu.:3.000  
+ Median :5.000   Median :4.00   Median :4.000   Median :4.000   Median :4.000  
+ Mean   :4.398   Mean   :3.99   Mean   :3.682   Mean   :3.732   Mean   :3.909  
+ 3rd Qu.:5.000   3rd Qu.:5.00   3rd Qu.:4.250   3rd Qu.:5.000   3rd Qu.:5.000  
+ Max.   :5.000   Max.   :5.00   Max.   :5.000   Max.   :5.000   Max.   :5.000  
+ 2.9.Compartir  2.10.Curiosidad  2.11.Conocer   2.12.Vacaciones 2.13.Acompañar 
+ Min.   :1.00   Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+ 1st Qu.:3.00   1st Qu.:2.000   1st Qu.:3.000   1st Qu.:2.000   1st Qu.:4.000  
+ Median :3.00   Median :2.000   Median :4.000   Median :3.000   Median :5.000  
+ Mean   :3.49   Mean   :2.385   Mean   :4.049   Mean   :3.133   Mean   :4.294  
+ 3rd Qu.:4.00   3rd Qu.:3.000   3rd Qu.:5.000   3rd Qu.:4.000   3rd Qu.:5.000  
+ Max.   :5.00   Max.   :5.000   Max.   :5.000   Max.   :5.000   Max.   :5.000  
+  2.14.Escapar    2.15.Estrés    2.16.Aburrimiento    2.17.Fe     
+ Min.   :1.000   Min.   :1.000   Min.   :1.000     Min.   :1.000  
+ 1st Qu.:2.000   1st Qu.:2.000   1st Qu.:1.000     1st Qu.:4.000  
+ Median :2.000   Median :3.000   Median :2.000     Median :4.000  
+ Mean   :2.661   Mean   :2.875   Mean   :2.276     Mean   :4.286  
+ 3rd Qu.:3.000   3rd Qu.:4.000   3rd Qu.:3.000     3rd Qu.:5.000  
+ Max.   :5.000   Max.   :5.000   Max.   :5.000     Max.   :5.000  
+ 2.18.Atmósfera  2.19.Cumplir deseo  2.20.Respeto   2.21.Redención 
+ Min.   :2.000   Min.   :1.000      Min.   :2.000   Min.   :1.000  
+ 1st Qu.:4.000   1st Qu.:3.000      1st Qu.:4.000   1st Qu.:2.000  
+ Median :4.000   Median :4.000      Median :5.000   Median :3.000  
+ Mean   :4.193   Mean   :3.891      Mean   :4.638   Mean   :3.151  
+ 3rd Qu.:5.000   3rd Qu.:5.000      3rd Qu.:5.000   3rd Qu.:4.000  
+ Max.   :5.000   Max.   :5.000      Max.   :5.000   Max.   :5.000  
+ 2.22.Artículos 2.23.Productos  3.1.Satisfaccion   4.1.Volver   
+ Min.   :1.00   Min.   :1.000   Min.   :1.000    Min.   :2.000  
+ 1st Qu.:3.00   1st Qu.:3.000   1st Qu.:5.000    1st Qu.:5.000  
+ Median :3.00   Median :3.000   Median :5.000    Median :5.000  
+ Mean   :3.51   Mean   :3.549   Mean   :4.849    Mean   :4.898  
+ 3rd Qu.:4.00   3rd Qu.:4.000   3rd Qu.:5.000    3rd Qu.:5.000  
+ Max.   :5.00   Max.   :5.000   Max.   :5.000    Max.   :5.000  
+ 4.2.Recomendar   4.3.Positivo   5. Nacionalidad     6.Sexo     
+ Min.   :2.000   Min.   :4.000   Min.   :1       Min.   :1.000  
+ 1st Qu.:5.000   1st Qu.:5.000   1st Qu.:1       1st Qu.:1.000  
+ Median :5.000   Median :5.000   Median :1       Median :2.000  
+ Mean   :4.935   Mean   :4.956   Mean   :1       Mean   :1.602  
+ 3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:1       3rd Qu.:2.000  
+ Max.   :5.000   Max.   :5.000   Max.   :1       Max.   :2.000  
+ 7.Estado Civil      8.Edad       9.Formación     10.Profesión  
+ Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+ 1st Qu.:1.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:3.000  
+ Median :1.000   Median :3.000   Median :3.000   Median :4.000  
+ Mean   :1.565   Mean   :3.286   Mean   :2.503   Mean   :4.755  
+ 3rd Qu.:2.000   3rd Qu.:4.000   3rd Qu.:3.000   3rd Qu.:8.000  
+ Max.   :3.000   Max.   :6.000   Max.   :6.000   Max.   :8.000  
+  11.Con quien      12.Veces        13.Gasto      14.Ingresos  
+ Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.00  
+ 1st Qu.:2.000   1st Qu.:3.000   1st Qu.:3.000   1st Qu.:1.00  
+ Median :2.000   Median :4.000   Median :4.000   Median :2.00  
+ Mean   :2.312   Mean   :3.367   Mean   :4.039   Mean   :2.26  
+ 3rd Qu.:3.000   3rd Qu.:4.000   3rd Qu.:5.000   3rd Qu.:3.00  
+ Max.   :6.000   Max.   :4.000   Max.   :6.000   Max.   :5.00  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">PCA</span>(otuzco[, <span class="dv">2</span><span class="sc">:</span><span class="dv">23</span>])   <span class="co"># This is a list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+PCA(X = otuzco[, 2:23]) 
+
+
+Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7
+Variance               4.041   1.682   1.392   1.300   1.222   1.188   1.132
+% of var.             18.367   7.646   6.326   5.908   5.552   5.399   5.145
+Cumulative % of var.  18.367  26.014  32.340  38.248  43.801  49.200  54.345
+                       Dim.8   Dim.9  Dim.10  Dim.11  Dim.12  Dim.13  Dim.14
+Variance               1.095   0.955   0.919   0.852   0.809   0.755   0.741
+% of var.              4.977   4.343   4.178   3.873   3.679   3.434   3.367
+Cumulative % of var.  59.323  63.666  67.844  71.716  75.395  78.828  82.196
+                      Dim.15  Dim.16  Dim.17  Dim.18  Dim.19  Dim.20  Dim.21
+Variance               0.661   0.607   0.555   0.518   0.443   0.439   0.357
+% of var.              3.002   2.757   2.522   2.352   2.013   1.996   1.625
+Cumulative % of var.  85.198  87.955  90.477  92.829  94.842  96.838  98.463
+                      Dim.22
+Variance               0.338
+% of var.              1.537
+Cumulative % of var. 100.000
+
+Individuals (the 10 first)
+                       Dist    Dim.1    ctr   cos2    Dim.2    ctr   cos2  
+1                  |  5.740 |  4.973  1.594  0.751 |  0.311  0.015  0.003 |
+2                  |  4.981 | -2.679  0.462  0.289 |  1.929  0.576  0.150 |
+3                  |  4.968 | -1.885  0.229  0.144 |  0.034  0.000  0.000 |
+4                  |  4.194 | -2.254  0.327  0.289 |  1.161  0.209  0.077 |
+5                  |  4.176 | -1.631  0.171  0.153 |  1.460  0.330  0.122 |
+6                  |  3.809 | -0.564  0.020  0.022 | -0.381  0.022  0.010 |
+7                  |  4.104 | -0.168  0.002  0.002 | -0.163  0.004  0.002 |
+8                  |  3.652 | -1.811  0.211  0.246 | -0.525  0.043  0.021 |
+9                  |  4.352 | -0.782  0.039  0.032 | -0.705  0.077  0.026 |
+10                 |  4.963 | -0.353  0.008  0.005 |  0.572  0.051  0.013 |
+                    Dim.3    ctr   cos2  
+1                  -1.159  0.251  0.041 |
+2                   1.512  0.427  0.092 |
+3                   2.440  1.114  0.241 |
+4                  -0.265  0.013  0.004 |
+5                   1.014  0.192  0.059 |
+6                   1.475  0.407  0.150 |
+7                   0.331  0.020  0.006 |
+8                  -2.092  0.819  0.328 |
+9                  -2.267  0.962  0.271 |
+10                 -0.834  0.130  0.028 |
+
+Variables (the 10 first)
+                      Dim.1    ctr   cos2    Dim.2    ctr   cos2    Dim.3
+2.1.Paz            |  0.326  2.623  0.106 |  0.157  1.457  0.025 |  0.373
+2.2.Grandeza       |  0.197  0.964  0.039 |  0.056  0.188  0.003 |  0.033
+2.3.Consuelo       |  0.378  3.540  0.143 | -0.419 10.429  0.175 |  0.199
+2.4.Belleza        |  0.345  2.945  0.119 |  0.078  0.357  0.006 |  0.436
+2.5.Misterio       |  0.259  1.666  0.067 |  0.432 11.117  0.187 |  0.288
+2.6.Tradición      |  0.454  5.096  0.206 |  0.154  1.407  0.024 | -0.110
+2.7.Fiesta         |  0.357  3.158  0.128 |  0.149  1.319  0.022 | -0.205
+2.8.Sitios         |  0.282  1.975  0.080 |  0.689 28.195  0.474 | -0.031
+2.9.Compartir      |  0.346  2.958  0.120 |  0.308  5.626  0.095 |  0.214
+2.10.Curiosidad    |  0.685 11.627  0.470 |  0.230  3.157  0.053 |  0.009
+                      ctr   cos2  
+2.1.Paz            10.009  0.139 |
+2.2.Grandeza        0.077  0.001 |
+2.3.Consuelo        2.857  0.040 |
+2.4.Belleza        13.635  0.190 |
+2.5.Misterio        5.945  0.083 |
+2.6.Tradición       0.865  0.012 |
+2.7.Fiesta          3.011  0.042 |
+2.8.Sitios          0.067  0.001 |
+2.9.Compartir       3.277  0.046 |
+2.10.Curiosidad     0.005  0.000 |</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Run the PCA with supplementary variables</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">PCA</span>(otuzco, <span class="at">quanti.sup =</span> <span class="dv">24</span><span class="sc">:</span><span class="dv">37</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res, <span class="at">rbelements =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+PCA(X = otuzco, quanti.sup = 24:37) 
+
+
+Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7
+Variance               4.073   1.683   1.409   1.322   1.247   1.188   1.155
+% of var.             16.970   7.011   5.872   5.508   5.196   4.949   4.812
+Cumulative % of var.  16.970  23.981  29.853  35.361  40.556  45.505  50.317
+                       Dim.8   Dim.9  Dim.10  Dim.11  Dim.12  Dim.13  Dim.14
+Variance               1.107   1.009   1.000   0.932   0.914   0.827   0.809
+% of var.              4.611   4.204   4.167   3.885   3.810   3.444   3.370
+Cumulative % of var.  54.928  59.132  63.299  67.184  70.994  74.438  77.808
+                      Dim.15  Dim.16  Dim.17  Dim.18  Dim.19  Dim.20  Dim.21
+Variance               0.753   0.725   0.661   0.576   0.554   0.505   0.443
+% of var.              3.138   3.021   2.752   2.402   2.307   2.105   1.845
+Cumulative % of var.  80.946  83.967  86.719  89.121  91.427  93.532  95.377
+                      Dim.22  Dim.23  Dim.24
+Variance               0.426   0.357   0.327
+% of var.              1.774   1.487   1.362
+Cumulative % of var.  97.151  98.638 100.000
+
+Individuals (the 10 first)
+                       Dist    Dim.1    ctr   cos2    Dim.2    ctr   cos2  
+1                  |  5.933 |  4.831  1.492  0.663 |  0.356  0.020  0.004 |
+2                  |  5.202 | -2.787  0.497  0.287 |  1.963  0.596  0.142 |
+3                  |  5.073 | -1.912  0.234  0.142 |  0.059  0.001  0.000 |
+4                  |  4.318 | -2.261  0.327  0.274 |  1.155  0.207  0.072 |
+5                  |  4.300 | -1.643  0.173  0.146 |  1.458  0.329  0.115 |
+6                  |  3.945 | -0.589  0.022  0.022 | -0.368  0.021  0.009 |
+7                  |  4.231 | -0.191  0.002  0.002 | -0.157  0.004  0.001 |
+8                  |  3.794 | -1.822  0.212  0.231 | -0.533  0.044  0.020 |
+9                  |  4.471 | -0.804  0.041  0.032 | -0.706  0.077  0.025 |
+10                 |  5.068 | -0.378  0.009  0.006 |  0.582  0.052  0.013 |
+                    Dim.3    ctr   cos2  
+1                  -0.601  0.067  0.010 |
+2                   1.756  0.569  0.114 |
+3                   2.593  1.242  0.261 |
+4                  -0.154  0.004  0.001 |
+5                   0.823  0.125  0.037 |
+6                   1.430  0.378  0.131 |
+7                   0.373  0.026  0.008 |
+8                  -1.851  0.633  0.238 |
+9                  -1.995  0.736  0.199 |
+10                 -0.460  0.039  0.008 |
+
+Variables (the 10 first)
+                      Dim.1    ctr   cos2    Dim.2    ctr   cos2    Dim.3
+1.1.Vive en Otuzco |  0.000  0.000  0.000 |  0.000  0.000  0.000 |  0.000
+2.1.Paz            |  0.323  2.554  0.104 |  0.160  1.517  0.026 |  0.345
+2.2.Grandeza       |  0.202  1.001  0.041 |  0.052  0.159  0.003 | -0.084
+2.3.Consuelo       |  0.375  3.447  0.140 | -0.415 10.260  0.173 |  0.189
+2.4.Belleza        |  0.342  2.867  0.117 |  0.081  0.394  0.007 |  0.427
+2.5.Misterio       |  0.258  1.638  0.067 |  0.434 11.212  0.189 |  0.255
+2.6.Tradición      |  0.448  4.926  0.201 |  0.158  1.487  0.025 | -0.038
+2.7.Fiesta         |  0.357  3.124  0.127 |  0.150  1.331  0.022 | -0.160
+2.8.Sitios         |  0.280  1.925  0.078 |  0.689 28.234  0.475 | -0.047
+2.9.Compartir      |  0.345  2.918  0.119 |  0.308  5.638  0.095 |  0.154
+                      ctr   cos2  
+1.1.Vive en Otuzco  0.000  0.000 |
+2.1.Paz             8.422  0.119 |
+2.2.Grandeza        0.500  0.007 |
+2.3.Consuelo        2.546  0.036 |
+2.4.Belleza        12.939  0.182 |
+2.5.Misterio        4.601  0.065 |
+2.6.Tradición       0.104  0.001 |
+2.7.Fiesta          1.818  0.026 |
+2.8.Sitios          0.157  0.002 |
+2.9.Compartir       1.675  0.024 |
+
+Supplementary continuous variables (the 10 first)
+                      Dim.1   cos2    Dim.2   cos2    Dim.3   cos2  
+2.23.Productos     |  0.474  0.225 | -0.285  0.081 |  0.062  0.004 |
+3.1.Satisfaccion   | -0.120  0.015 |  0.104  0.011 |  0.091  0.008 |
+4.1.Volver         | -0.273  0.074 | -0.042  0.002 |  0.068  0.005 |
+4.2.Recomendar     | -0.148  0.022 | -0.032  0.001 |  0.094  0.009 |
+4.3.Positivo       | -0.094  0.009 | -0.039  0.002 |  0.083  0.007 |
+5. Nacionalidad    |  0.000  0.000 |  0.000  0.000 |  0.000  0.000 |
+6.Sexo             | -0.074  0.006 | -0.004  0.000 |  0.055  0.003 |
+7.Estado Civil     |  0.093  0.009 | -0.075  0.006 | -0.021  0.000 |
+8.Edad             |  0.171  0.029 | -0.029  0.001 | -0.137  0.019 |
+9.Formación        |  0.054  0.003 | -0.143  0.021 |  0.002  0.000 |</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Description of the dimensions</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dimdesc</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$Dim.1
+
+Link between the variable and the continuous variables (R-square)
+=================================================================================
+                   correlation      p.value
+&lt;NA&gt;                        NA           NA
+&lt;NA&gt;                        NA           NA
+2.16.Aburrimiento    0.7579571 7.082048e-73
+2.14.Escapar         0.7057747 3.764775e-59
+2.10.Curiosidad      0.6905030 1.088073e-55
+2.15.Estrés          0.6296789 8.313505e-44
+2.21.Redención       0.5512132 6.678257e-32
+2.23.Productos       0.4739820 6.670621e-23
+2.6.Tradición        0.4479226 2.395436e-20
+2.18.Atmósfera       0.4185904 1.010314e-17
+2.22.Artículos       0.4134343 2.754388e-17
+2.19.Cumplir deseo   0.3867407 3.785491e-15
+2.3.Consuelo         0.3747047 3.023638e-14
+2.7.Fiesta           0.3566703 5.812026e-13
+2.9.Compartir        0.3447307 3.720981e-12
+2.4.Belleza          0.3417334 5.858195e-12
+2.1.Paz              0.3225062 9.609871e-11
+2.20.Respeto         0.3084050 6.619100e-10
+2.17.Fe              0.2980683 2.555896e-09
+2.8.Sitios           0.2800359 2.381260e-08
+2.5.Misterio         0.2582564 2.873147e-07
+14.Ingresos          0.2053365 5.036707e-05
+2.2.Grandeza         0.2019260 6.743742e-05
+8.Edad               0.1705034 7.940040e-04
+3.1.Satisfaccion    -0.1204499 1.821419e-02
+2.13.Acompañar      -0.1448011 4.465486e-03
+4.2.Recomendar      -0.1481394 3.619696e-03
+4.1.Volver          -0.2726442 5.683683e-08
+2.11.Conocer        -0.2890026 8.004933e-09
+
+$Dim.2
+
+Link between the variable and the continuous variables (R-square)
+=================================================================================
+                   correlation      p.value
+&lt;NA&gt;                        NA           NA
+&lt;NA&gt;                        NA           NA
+2.8.Sitios           0.6892443 2.052656e-55
+2.12.Vacaciones      0.5411163 1.369027e-30
+2.5.Misterio         0.4343400 4.233559e-19
+2.9.Compartir        0.3079873 6.997698e-10
+2.10.Curiosidad      0.2285692 6.055141e-06
+2.1.Paz              0.1597466 1.687372e-03
+2.6.Tradición        0.1581998 1.873607e-03
+2.11.Conocer         0.1524400 2.744577e-03
+2.7.Fiesta           0.1496452 3.288013e-03
+2.13.Acompañar       0.1199637 1.869116e-02
+2.17.Fe              0.1100168 3.113070e-02
+3.1.Satisfaccion     0.1035343 4.259209e-02
+10.Profesión         0.1033233 4.301821e-02
+9.Formación         -0.1434276 4.862482e-03
+2.21.Redención      -0.1445951 4.523097e-03
+2.14.Escapar        -0.1679338 9.545871e-04
+2.20.Respeto        -0.2000149 7.925258e-05
+2.15.Estrés         -0.2101719 3.302378e-05
+2.19.Cumplir deseo  -0.2208057 1.260808e-05
+2.23.Productos      -0.2852760 1.265183e-08
+2.22.Artículos      -0.2985643 2.398338e-09
+2.3.Consuelo        -0.4154913 1.849932e-17
+
+$Dim.3
+
+Link between the variable and the continuous variables (R-square)
+=================================================================================
+                  correlation      p.value
+&lt;NA&gt;                       NA           NA
+&lt;NA&gt;                       NA           NA
+2.20.Respeto        0.5804970 5.709837e-36
+2.4.Belleza         0.4270332 1.883051e-18
+2.1.Paz             0.3445304 3.836187e-12
+2.17.Fe             0.2655568 1.277817e-07
+2.5.Misterio        0.2546588 4.245057e-07
+2.18.Atmósfera      0.2494647 7.381607e-07
+2.3.Consuelo        0.1894307 1.885919e-04
+2.11.Conocer        0.1872622 2.239829e-04
+2.9.Compartir       0.1536427 2.536947e-03
+2.21.Redención     -0.1297476 1.092778e-02
+8.Edad             -0.1374701 6.978048e-03
+2.7.Fiesta         -0.1600664 1.651046e-03
+2.16.Aburrimiento  -0.2248211 8.655786e-06
+2.14.Escapar       -0.2433631 1.392156e-06
+14.Ingresos        -0.2847942 1.341670e-08
+2.12.Vacaciones    -0.2866564 1.068699e-08
+2.15.Estrés        -0.3754834 2.650152e-14</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dimdesc</span>(res, <span class="at">proba =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$Dim.1
+
+Link between the variable and the continuous variables (R-square)
+=================================================================================
+                   correlation      p.value
+&lt;NA&gt;                        NA           NA
+&lt;NA&gt;                        NA           NA
+2.16.Aburrimiento   0.75795712 7.082048e-73
+2.14.Escapar        0.70577474 3.764775e-59
+2.10.Curiosidad     0.69050297 1.088073e-55
+2.15.Estrés         0.62967885 8.313505e-44
+2.21.Redención      0.55121317 6.678257e-32
+2.23.Productos      0.47398199 6.670621e-23
+2.6.Tradición       0.44792256 2.395436e-20
+2.18.Atmósfera      0.41859038 1.010314e-17
+2.22.Artículos      0.41343426 2.754388e-17
+2.19.Cumplir deseo  0.38674068 3.785491e-15
+2.3.Consuelo        0.37470472 3.023638e-14
+2.7.Fiesta          0.35667031 5.812026e-13
+2.9.Compartir       0.34473073 3.720981e-12
+2.4.Belleza         0.34173340 5.858195e-12
+2.1.Paz             0.32250617 9.609871e-11
+2.20.Respeto        0.30840499 6.619100e-10
+2.17.Fe             0.29806829 2.555896e-09
+2.8.Sitios          0.28003589 2.381260e-08
+2.5.Misterio        0.25825643 2.873147e-07
+14.Ingresos         0.20533646 5.036707e-05
+2.2.Grandeza        0.20192596 6.743742e-05
+8.Edad              0.17050342 7.940040e-04
+7.Estado Civil      0.09282137 6.923023e-02
+10.Profesión       -0.06978988 1.723150e-01
+6.Sexo             -0.07441325 1.455418e-01
+4.3.Positivo       -0.09381513 6.629077e-02
+3.1.Satisfaccion   -0.12044993 1.821419e-02
+2.13.Acompañar     -0.14480105 4.465486e-03
+4.2.Recomendar     -0.14813937 3.619696e-03
+4.1.Volver         -0.27264416 5.683683e-08
+2.11.Conocer       -0.28900256 8.004933e-09
+
+$Dim.2
+
+Link between the variable and the continuous variables (R-square)
+=================================================================================
+                   correlation      p.value
+&lt;NA&gt;                        NA           NA
+&lt;NA&gt;                        NA           NA
+2.8.Sitios          0.68924431 2.052656e-55
+2.12.Vacaciones     0.54111628 1.369027e-30
+2.5.Misterio        0.43434001 4.233559e-19
+2.9.Compartir       0.30798732 6.997698e-10
+2.10.Curiosidad     0.22856920 6.055141e-06
+2.1.Paz             0.15974656 1.687372e-03
+2.6.Tradición       0.15819984 1.873607e-03
+2.11.Conocer        0.15244000 2.744577e-03
+2.7.Fiesta          0.14964523 3.288013e-03
+2.13.Acompañar      0.11996373 1.869116e-02
+2.17.Fe             0.11001678 3.113070e-02
+3.1.Satisfaccion    0.10353433 4.259209e-02
+10.Profesión        0.10332331 4.301821e-02
+2.4.Belleza         0.08145446 1.110211e-01
+12.Veces            0.06832960 1.814910e-01
+7.Estado Civil     -0.07549488 1.397624e-01
+9.Formación        -0.14342758 4.862482e-03
+2.21.Redención     -0.14459506 4.523097e-03
+2.14.Escapar       -0.16793381 9.545871e-04
+2.20.Respeto       -0.20001488 7.925258e-05
+2.15.Estrés        -0.21017189 3.302378e-05
+2.19.Cumplir deseo -0.22080566 1.260808e-05
+2.23.Productos     -0.28527600 1.265183e-08
+2.22.Artículos     -0.29856434 2.398338e-09
+2.3.Consuelo       -0.41549128 1.849932e-17
+
+$Dim.3
+
+Link between the variable and the continuous variables (R-square)
+=================================================================================
+                   correlation      p.value
+&lt;NA&gt;                        NA           NA
+&lt;NA&gt;                        NA           NA
+2.20.Respeto        0.58049696 5.709837e-36
+2.4.Belleza         0.42703324 1.883051e-18
+2.1.Paz             0.34453036 3.836187e-12
+2.17.Fe             0.26555684 1.277817e-07
+2.5.Misterio        0.25465876 4.245057e-07
+2.18.Atmósfera      0.24946465 7.381607e-07
+2.3.Consuelo        0.18943067 1.885919e-04
+2.11.Conocer        0.18726218 2.239829e-04
+2.9.Compartir       0.15364274 2.536947e-03
+4.2.Recomendar      0.09427567 6.496371e-02
+3.1.Satisfaccion    0.09109932 7.457585e-02
+4.3.Positivo        0.08260919 1.060318e-01
+2.19.Cumplir deseo  0.07653707 1.343617e-01
+4.1.Volver          0.06793904 1.840054e-01
+2.22.Artículos      0.06719837 1.888440e-01
+2.2.Grandeza       -0.08397333 1.003678e-01
+2.21.Redención     -0.12974755 1.092778e-02
+8.Edad             -0.13747008 6.978048e-03
+2.7.Fiesta         -0.16006639 1.651046e-03
+2.16.Aburrimiento  -0.22482111 8.655786e-06
+2.14.Escapar       -0.24336309 1.392156e-06
+14.Ingresos        -0.28479417 1.341670e-08
+2.12.Vacaciones    -0.28665636 1.068699e-08
+2.15.Estrés        -0.37548338 2.650152e-14</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">invisible =</span> <span class="st">"quali"</span>, <span class="at">title =</span> <span class="st">"Individual PCA Graph"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(res, cex = 0.8, habillage = "Competition")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Confidence ellipses around the categories</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotellipses</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graphs for dimensions 1 and 2</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">choix =</span> <span class="st">"ind"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">habillage =</span> <span class="dv">13</span>, <span class="at">title =</span> <span class="st">"Individual PCA Graph"</span>, <span class="at">axes =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">choix =</span> <span class="st">"var"</span>, <span class="at">title =</span> <span class="st">"variables PCA Graph"</span>, <span class="at">axes =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graphs for dimensions 3 and 4</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">choix =</span> <span class="st">"ind"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">habillage =</span> <span class="dv">13</span>, <span class="at">title =</span> <span class="st">"Individual PCA Graph"</span>, <span class="at">axes =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">choix =</span> <span class="st">"var"</span>, <span class="at">title =</span> <span class="st">"variables PCA Graph"</span>, <span class="at">axes =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting individuals</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">choix =</span> <span class="st">"ind"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">habillage =</span> <span class="dv">5</span>, <span class="at">select =</span> <span class="st">"cos2 0.7"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">choix =</span> <span class="st">"ind"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">habillage =</span> <span class="dv">5</span>, <span class="at">select =</span> <span class="st">"contrib 15"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select variables</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">choix =</span><span class="st">"var"</span>, <span class="at">select =</span> <span class="st">"contrib = 15"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">habillage =</span> <span class="dv">13</span>, <span class="at">select =</span> <span class="st">"cos2 0.7"</span>, <span class="at">title =</span> <span class="st">"Motivaciones Otuzco"</span>, <span class="at">cex.main =</span> <span class="fl">1.1</span>, <span class="at">cex.axis =</span> <span class="fl">0.9</span>, <span class="at">shadow =</span> <span class="cn">TRUE</span>, <span class="at">auto =</span> <span class="st">"y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="explore-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="explore-the-results">Explore the results</h3>
+<section id="top-eigenvalues" class="level4">
+<h4 class="anchored" data-anchor-id="top-eigenvalues">1.Top Eigenvalues</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>eig[<span class="dv">2</span><span class="sc">:</span><span class="dv">23</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        eigenvalue percentage of variance cumulative percentage of variance
+comp 2   1.6825682               7.010701                          23.98050
+comp 3   1.4093784               5.872410                          29.85291
+comp 4   1.3218750               5.507812                          35.36072
+comp 5   1.2469409               5.195587                          40.55631
+comp 6   1.1877865               4.949111                          45.50542
+comp 7   1.1548240               4.811767                          50.31719
+comp 8   1.1066564               4.611068                          54.92826
+comp 9   1.0089342               4.203893                          59.13215
+comp 10  1.0000000               4.166667                          63.29882
+comp 11  0.9324847               3.885353                          67.18417
+comp 12  0.9142968               3.809570                          70.99374
+comp 13  0.8266515               3.444381                          74.43812
+comp 14  0.8087902               3.369959                          77.80808
+comp 15  0.7531607               3.138170                          80.94625
+comp 16  0.7249859               3.020775                          83.96702
+comp 17  0.6605336               2.752224                          86.71925
+comp 18  0.5763605               2.401502                          89.12075
+comp 19  0.5535620               2.306508                          91.42726
+comp 20  0.5051631               2.104846                          93.53210
+comp 21  0.4426957               1.844565                          95.37667
+comp 22  0.4257588               1.773995                          97.15066
+comp 23  0.3569380               1.487241                          98.63791</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(res, <span class="at">addlabels =</span> <span class="cn">TRUE</span>, <span class="at">ncp =</span> <span class="dv">15</span>) <span class="sc">+</span> <span class="fu">theme_grey</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="top-individuals" class="level4">
+<h4 class="anchored" data-anchor-id="top-individuals">2. Top individuals</h4>
+<section id="coordinates-of-individuals-on-the-principal-components" class="level5">
+<h5 class="anchored" data-anchor-id="coordinates-of-individuals-on-the-principal-components">Coordinates of individuals on the principal components</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>ind<span class="sc">$</span>coord[<span class="dv">2</span><span class="sc">:</span><span class="dv">37</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Dim.1       Dim.2       Dim.3       Dim.4       Dim.5
+2  -2.78727707  1.96299861  1.75557614  0.38209761 -1.33344131
+3  -1.91176576  0.05864621  2.59259909  0.78926050  0.34426383
+4  -2.26107307  1.15546036 -0.15385267  1.41405662  1.44834091
+5  -1.64349857  1.45836596  0.82324309 -0.11338774  2.03403917
+6  -0.58865577 -0.36790280  1.42955003 -0.07968204  1.38417376
+7  -0.19076235 -0.15680257  0.37344319  0.59950350  2.17064219
+8  -1.82209898 -0.53322850 -1.85074945  1.00464448 -0.52424971
+9  -0.80448620 -0.70560363 -1.99527414  0.01690129 -2.67572760
+10 -0.37809795  0.58218071 -0.45983158  0.98939823 -2.58750294
+11 -2.46567938  0.40010075 -2.16692078  1.09964948 -2.08080860
+12 -0.41467200  0.13328513 -1.23031693 -0.18404324 -1.32011079
+13 -0.68004306  1.86056201  0.30473237 -1.25251865 -1.02165869
+14 -1.39383717  2.71779595 -0.11822771 -0.59594631 -1.75061618
+15 -2.68688543  2.31674046 -0.42748281 -0.44838680  1.10526215
+16  0.67468835  2.16312240  0.03292682  1.19719917  0.48577000
+17 -1.25565254  1.58641483  1.75392799  0.68186914  0.29066471
+18 -1.15673885  2.14454672  1.01516595 -1.62810884 -1.96859709
+19 -0.10685978  0.83543950  0.14294318  0.68927727 -1.26719474
+20  1.22732029 -2.81330305  1.59513855 -0.67253720  1.88548555
+21 -2.32307241 -1.50000323 -0.85015821 -0.47609351  0.04800537
+22 -2.64538085 -1.02853715 -1.71476480 -0.70561285  0.53557728
+23 -0.24017131 -1.01741127  0.81304986  0.85935926  0.74021573
+24 -0.27216101  1.50496787 -0.02648090  0.86635741  1.01153211
+25 -1.88996011 -0.58139963  0.66089049 -0.26898169  0.46746260
+26 -0.86339736  1.76494136  0.26031987  1.05622170 -1.06127787
+27 -0.35227614  0.57095764  0.38822517  0.39482824  2.17671448
+28  0.90961135  0.61623171  1.64582775 -0.24207797  0.45249392
+29 -1.07303932 -1.01152275  0.34337146  3.82366433  0.16074877
+30 -0.25202541 -3.48204620 -0.96027277  1.25903997 -3.00032469
+31 -1.93572003 -1.96200409  0.34676659  1.06980254  0.44667482
+32  0.01150681 -0.61331433  0.81197413  0.32820186 -0.26473243
+33 -0.14519633 -0.87036537  0.01962420 -0.53888225 -1.38705408
+34  0.30447626  1.36944929 -1.19993738  2.20738216  0.21424919
+35 -0.51647245 -1.61622875 -1.13866833  1.67815922 -1.45810106
+36 -1.13739359 -0.88624773 -0.25606659  1.11044056  1.11903397
+37  0.97023968  0.67832614  0.87198849  0.21991514  0.03709494</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="top-15-variables" class="level4">
+<h4 class="anchored" data-anchor-id="top-15-variables">3. Top 15 Variables</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>var<span class="sc">$</span>coord[<span class="dv">2</span><span class="sc">:</span><span class="dv">23</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Dim.1       Dim.2       Dim.3       Dim.4        Dim.5
+2.1.Paz             0.32250617  0.15974656  0.34453036 -0.14550653  0.235792742
+2.2.Grandeza        0.20192596  0.05177618 -0.08397333 -0.40094018  0.406350241
+2.3.Consuelo        0.37470472 -0.41549128  0.18943067 -0.24844918 -0.188304720
+2.4.Belleza         0.34173340  0.08145446  0.42703324 -0.01120680  0.125626719
+2.5.Misterio        0.25825643  0.43434001  0.25465876 -0.19376298  0.009618817
+2.6.Tradición       0.44792256  0.15819984 -0.03820989  0.10417721 -0.260583667
+2.7.Fiesta          0.35667031  0.14964523 -0.16006639  0.06876756 -0.533465676
+2.8.Sitios          0.28003589  0.68924431 -0.04710572 -0.15651445 -0.176009704
+2.9.Compartir       0.34473073  0.30798732  0.15364274 -0.28591038 -0.089168828
+2.10.Curiosidad     0.69050297  0.22856920 -0.01412302  0.05841450  0.162692799
+2.11.Conocer       -0.28900256  0.15244000  0.18726218  0.35267975  0.291492978
+2.12.Vacaciones    -0.05394546  0.54111628 -0.28665636  0.31501328 -0.044146577
+2.13.Acompañar     -0.14480105  0.11996373  0.03721802  0.54196250  0.152452518
+2.14.Escapar        0.70577474 -0.16793381 -0.24336309  0.18662639  0.161281057
+2.15.Estrés         0.62967885 -0.21017189 -0.37548338  0.29400027  0.080955612
+2.16.Aburrimiento   0.75795712  0.03557333 -0.22482111  0.09882023  0.138765120
+2.17.Fe             0.29806829  0.11001678  0.26555684  0.15161954  0.399269263
+2.18.Atmósfera      0.41859038  0.02712434  0.24946465  0.17736794 -0.307270868
+2.19.Cumplir deseo  0.38674068 -0.22080566  0.07653707 -0.12755660 -0.213519494
+2.20.Respeto        0.30840499 -0.20001488  0.58049696  0.31143384 -0.084139195
+2.21.Redención      0.55121317 -0.14459506 -0.12974755 -0.03978843  0.065466788
+2.22.Artículos      0.41343426 -0.29856434  0.06719837  0.07161355 -0.004488051</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_ind</span>(res, <span class="at">select.ind =</span> <span class="fu">list</span>(<span class="at">contrib =</span> <span class="dv">15</span>), <span class="at">axes=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">repel =</span> T) <span class="sc">+</span> <span class="fu">theme_grey</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="cos2-quality-of-representation-of-individuals-on-the-principal-components" class="level5">
+<h5 class="anchored" data-anchor-id="cos2-quality-of-representation-of-individuals-on-the-principal-components">Cos2 : quality of representation of individuals on the principal components</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>ind<span class="sc">$</span>cos2[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Dim.1        Dim.2       Dim.3        Dim.4       Dim.5
+1  0.663004047 0.0036096604 0.010247875 1.776658e-02 0.022820900
+2  0.287063531 0.1423828640 0.113882522 5.394689e-03 0.065700027
+3  0.142007426 0.0001336354 0.261163467 2.420374e-02 0.004604946
+4  0.274193848 0.0716042188 0.001269517 1.072413e-01 0.112504556
+5  0.146061312 0.1150084028 0.036648206 6.952304e-04 0.223725331
+6  0.022267113 0.0086977576 0.131322707 4.080017e-04 0.123118222
+7  0.002033128 0.0013736805 0.007791632 2.007996e-02 0.263242398
+8  0.230670341 0.0197548866 0.237981439 7.012496e-02 0.019095201
+9  0.032371074 0.0249024185 0.199124667 1.428761e-05 0.358099497
+10 0.005566553 0.0131975498 0.008233325 3.811711e-02 0.260699015
+11 0.194779010 0.0051287044 0.150437122 3.874159e-02 0.138718126
+12 0.008217483 0.0008489708 0.072337483 1.618710e-03 0.083281811
+13 0.022825640 0.1708592325 0.004583395 7.743166e-02 0.051518335
+14 0.061714624 0.2346376480 0.000444020 1.128180e-02 0.097352225
+15 0.315962401 0.2349047899 0.007997871 8.799191e-03 0.053464770</code></pre>
+</div>
+</div>
+</section>
+<section id="contribution-of-individuals-to-the-principal-components" class="level5">
+<h5 class="anchored" data-anchor-id="contribution-of-individuals-to-the-principal-components">Contribution of individuals to the principal components</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>ind<span class="sc">$</span>contrib[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Dim.1        Dim.2       Dim.3        Dim.4      Dim.5
+1  1.492149306 0.0196642661 0.066648484 1.231962e-01 0.16775325
+2  0.496753681 0.5963978818 0.569482656 2.876253e-02 0.37133912
+3  0.233695403 0.0005323239 1.241972248 1.227211e-01 0.02475174
+4  0.326896300 0.2066361044 0.004373723 3.939236e-01 0.43809116
+5  0.172710791 0.3291767425 0.125226818 2.532857e-03 0.86405525
+6  0.022156626 0.0209489518 0.377606862 1.250833e-03 0.40013276
+7  0.002326838 0.0038054190 0.025768566 7.080466e-02 0.98400968
+8  0.212287655 0.0440071070 0.632901930 1.988397e-01 0.05739833
+9  0.041382622 0.0770579981 0.735607778 5.627532e-05 1.49522548
+10 0.009140910 0.0524580005 0.039069581 1.928504e-01 1.39824925
+11 0.388735334 0.0247762075 0.867615363 2.382248e-01 0.90424717
+12 0.010994873 0.0027495364 0.279688857 6.672954e-03 0.36395162
+13 0.029570157 0.5357774209 0.017158461 3.090628e-01 0.21798899
+14 0.124223825 1.1432199654 0.002582734 6.996690e-02 0.64003654
+15 0.461614145 0.8307127420 0.033765911 3.960810e-02 0.25512527</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="scree-plot-contributions-graph" class="level3">
+<h3 class="anchored" data-anchor-id="scree-plot-contributions-graph">Scree plot (Contributions graph)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(res, <span class="at">ncp =</span> <span class="dv">15</span>, <span class="at">addlabels =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="visualize-individuals-and-variables-on-the-first-two-principal-components" class="level3">
+<h3 class="anchored" data-anchor-id="visualize-individuals-and-variables-on-the-first-two-principal-components">Visualize individuals and variables on the first two principal components</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_ind</span>(res, <span class="at">select.ind =</span> <span class="fu">list</span>(<span class="at">contrib =</span> <span class="dv">15</span>), <span class="at">col.ind =</span> <span class="st">"cos2"</span>, <span class="at">col.var =</span> <span class="st">"contrib"</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="correlation-circle" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-circle">Correlation circle</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_var</span>(res, <span class="at">select.var =</span> <span class="fu">list</span>(<span class="at">contrib =</span> <span class="dv">15</span>), <span class="at">col.var =</span> <span class="st">"cos2"</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="factoMineR_PCA_Analysis_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

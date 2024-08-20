@@ -1,0 +1,144 @@
+---
+title: "Motivaciones Virgen de la Puerta-factoMineR"
+author: "Rodolfo León"
+format: html
+date: last-modified
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+library(psych)
+```
+
+## Principal Components Analysis - PCA
+
+```{r}
+#Load the data
+otuzco <- read_csv2("data/Motivaciones_Virgen_de_Otuzco_short_UTF8.csv")
+summary(otuzco)
+```
+
+```{r}
+res <- PCA(otuzco[, 2:23])   # This is a list
+summary(res)
+```
+
+```{r}
+#Run the PCA with supplementary variables
+res <- PCA(otuzco, quanti.sup = 24:37)
+summary(res, rbelements = Inf)
+```
+
+```{r}
+# Description of the dimensions
+dimdesc(res)
+dimdesc(res, proba = 0.2)
+```
+
+```{r}
+plot(res, cex = 0.8, invisible = "quali", title = "Individual PCA Graph")
+# plot(res, cex = 0.8, habillage = "Competition")
+```
+
+```{r}
+# Confidence ellipses around the categories
+plotellipses(res)
+```
+
+```{r}
+# Graphs for dimensions 1 and 2
+plot(res, choix = "ind", cex = 0.8, habillage = 13, title = "Individual PCA Graph", axes = 1:2)
+plot(res, choix = "var", title = "variables PCA Graph", axes = 1:2)
+```
+
+```{r}
+# Graphs for dimensions 3 and 4
+plot(res, choix = "ind", cex = 0.8, habillage = 13, title = "Individual PCA Graph", axes = 3:4)
+plot(res, choix = "var", title = "variables PCA Graph", axes = 3:4)
+```
+
+```{r}
+# Selecting individuals
+plot(res, choix = "ind", cex = 0.8, habillage = 5, select = "cos2 0.7")
+plot(res, choix = "ind", cex = 0.8, habillage = 5, select = "contrib 15")
+```
+
+```{r}
+# Select variables
+plot(res, choix ="var", select = "contrib = 15")
+```
+
+```{r}
+plot(res, cex = 0.8, habillage = 13, select = "cos2 0.7", title = "Motivaciones Otuzco", cex.main = 1.1, cex.axis = 0.9, shadow = TRUE, auto = "y")
+```
+
+### Explore the results
+
+#### 1.Top Eigenvalues
+
+```{r}
+res$eig[2:23,]
+```
+
+```{r}
+fviz_eig(res, addlabels = TRUE, ncp = 15) + theme_grey()
+```
+
+#### 2. Top individuals
+
+##### Coordinates of individuals on the principal components
+
+```{r}
+res$ind$coord[2:37,]
+```
+
+#### 3. Top 15 Variables
+
+```{r}
+res$var$coord[2:23, ]
+```
+
+```{r}
+fviz_pca_ind(res, select.ind = list(contrib = 15), axes=c(1,2), repel = T) + theme_grey()
+```
+
+##### Cos2 : quality of representation of individuals on the principal components
+
+```{r}
+res$ind$cos2[1:15,]
+```
+
+##### Contribution of individuals to the principal components
+
+```{r}
+res$ind$contrib[1:15,]
+```
+
+### Scree plot (Contributions graph)
+
+```{r}
+fviz_eig(res, ncp = 15, addlabels = TRUE)
+```
+
+### Visualize individuals and variables on the first two principal components
+
+```{r}
+fviz_pca_ind(res, select.ind = list(contrib = 15), col.ind = "cos2", col.var = "contrib", repel = TRUE)
+```
+
+### Correlation circle
+
+```{r}
+
+fviz_pca_var(res, select.var = list(contrib = 15), col.var = "cos2", repel = TRUE)
+```
